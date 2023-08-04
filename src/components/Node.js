@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-
+const maxRows = 30;
+const maxCols = 46;
 const Node = ({
 	row,
 	col,
@@ -35,6 +36,10 @@ const Node = ({
 		cursor: isDragging ? "move" : "pointer",
 	};
 
+	const clamp = (value, min, max) => {
+		return Math.min(Math.max(value, min), max);
+	};
+
 	useEffect(() => {
 		const handleMouseMove = (e) => {
 			if (!isDragging) return;
@@ -43,8 +48,10 @@ const Node = ({
 			const gridRect = gridContainer.getBoundingClientRect();
 			const x = e.clientX - gridRect.left;
 			const y = e.clientY - gridRect.top;
-			const newRow = Math.floor(y / 30)-2; // not sure why it's kinda off
-			const newCol = Math.floor(x / 30)-4;
+			// Calculate the new row and column (clamped within the grid boundaries)
+			const newRow = clamp(Math.floor(y / 30)-2, 0, maxRows - 1);
+			const newCol = clamp(Math.floor(x / 30)-4, 0, maxCols - 1);
+
 			onNodeMouseEnter(newRow, newCol, isStart, isGoal);
 		};
 

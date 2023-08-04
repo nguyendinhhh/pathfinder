@@ -45,7 +45,6 @@ export const Visualizer = () => {
 		} else if (isGoal) {
 			setGoalNodePos({ row, col });
         }
-        console.log(row, " ", col)
 	};
 
 	const handleNodeMouseEnter = (row, col, isStart, isGoal) => {
@@ -54,7 +53,6 @@ export const Visualizer = () => {
 		} else if (isGoal) {
 			setGoalNodePos({ row, col });
         }
-        console.log(row, " ", col);
 	};
 
 	const handleNodeMouseUp = () => {
