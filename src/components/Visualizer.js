@@ -1,12 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 import Node from "./Node";
 import { css } from "@emotion/css";
 import theme from "../theme";
 
 const maxRows = 30;
 const maxCols = 46;
+const startNodeLocation = { row: 15, col: 4 };
+const goalNodeLocation = { row: 15, col: 41 };
 
 export const Visualizer = () => {
+	const [startNodePos, setStartNodePos] = useState(startNodeLocation);
+	const [goalNodePos, setGoalNodePos] = useState(goalNodeLocation);
+
 	// create a 2d array of nodes
 	const createGrid = () => {
 		const grid = [];
@@ -16,8 +21,9 @@ export const Visualizer = () => {
 				const newNode = {
 					row,
 					col,
-					isStart: row === 15 && col === 5,
-					isGoal: row === 15 && col === 40,
+					isStart:
+						row === startNodeLocation.row && col === startNodeLocation.col, // this will return true once we get to the coordinates
+					isGoal: row === goalNodeLocation.row && col === goalNodeLocation.col,
 					isSolid: false,
 					isOpen: false,
 					isChecked: false,
@@ -32,11 +38,35 @@ export const Visualizer = () => {
 	// create grid
 	const grid = createGrid();
 
+	// event handlers for dragging the start node and the goal node
+	const handleNodeMouseDown = (row, col, isStart, isGoal) => {
+		if (isStart) {
+			setStartNodePos({ row, col });
+		} else if (isGoal) {
+			setGoalNodePos({ row, col });
+        }
+        console.log(row, " ", col)
+	};
+
+	const handleNodeMouseEnter = (row, col, isStart, isGoal) => {
+		if (isStart) {
+			setStartNodePos({ row, col });
+		} else if (isGoal) {
+			setGoalNodePos({ row, col });
+        }
+        console.log(row, " ", col);
+	};
+
+	const handleNodeMouseUp = () => {
+		// Any additional logic when the dragging stops (if needed)
+	};
+
 	return (
 		<>
-			<div
-                className={css`
-                    margin-top: 2em;
+            <div
+                id="grid-container"
+				className={css`
+					margin-top: 2em;
 					display: grid;
 					gap: 1px;
 					justify-content: center;
@@ -51,11 +81,20 @@ export const Visualizer = () => {
 								key={`node-${rowIndex}-${colIndex}`}
 								row={rowIndex}
 								col={colIndex}
-								isStart={node.isStart}
-								isGoal={node.isGoal}
+								isStart={
+									rowIndex === startNodePos.row && colIndex === startNodePos.col
+								}
+								isGoal={
+									rowIndex === goalNodePos.row && colIndex === goalNodePos.col
+								}
 								isSolid={node.isSolid}
 								isOpen={node.isOpen}
 								isChecked={node.isChecked}
+								onNodeMouseDown={handleNodeMouseDown}
+								onNodeMouseEnter={handleNodeMouseEnter}
+								onNodeMouseUp={handleNodeMouseUp}
+								startNodePos={startNodePos}
+								goalNodePos={goalNodePos}
 							/>
 						))}
 					</div>
