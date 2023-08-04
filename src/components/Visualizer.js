@@ -3,8 +3,8 @@ import Node from "./Node";
 import { css } from "@emotion/css";
 import theme from "../theme";
 
-const maxRows = 20;
-const maxCols = 30;
+const maxRows = 30;
+const maxCols = 46;
 
 export const Visualizer = () => {
 	// create a 2d array of nodes
@@ -16,8 +16,8 @@ export const Visualizer = () => {
 				const newNode = {
 					row,
 					col,
-					isStart: false,
-					isGoal: false,
+					isStart: row === 15 && col === 5,
+					isGoal: row === 15 && col === 40,
 					isSolid: false,
 					isOpen: false,
 					isChecked: false,
@@ -35,7 +35,8 @@ export const Visualizer = () => {
 	return (
 		<>
 			<div
-				className={css`
+                className={css`
+                    margin-top: 2em;
 					display: grid;
 					gap: 1px;
 					justify-content: center;

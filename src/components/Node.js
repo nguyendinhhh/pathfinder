@@ -16,9 +16,8 @@ const Node = ({ row, col, isStart, isGoal, isSolid, isOpen, isChecked }) => {
 			: isChecked
 			? "purple"
 			: "lightgray",
-        // border: "1px solid #ccc",
-        // outline: "1px solid rgb(175, 216, 248)",
-        margin: "2px",
+        // border: "1px solid #fff",
+        outline: "1px solid #fff",
         display: "inline-block",
 
 	};
