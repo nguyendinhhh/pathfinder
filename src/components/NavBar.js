@@ -27,7 +27,20 @@ export const NavBar = () => {
 					>
 						Start A* Search Algorithm
 					</div>
-                    
+					<div
+						className={css`
+							${theme.ultilityButton}
+						`}
+					>
+						Reset Obstacles
+					</div>
+					<div
+						className={css`
+							${theme.ultilityButton}
+						`}
+					>
+						Reset All
+					</div>
 				</div>
 			</>
 		);
