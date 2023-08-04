@@ -1,22 +1,32 @@
-class Node {
+import React from "react";
 
-    constructor(row, col) {
-        this.row = row;
-        this.col = col;
+const Node = ({ row, col, isStart, isGoal, isSolid, isOpen, isChecked }) => {
+	// Styles for different node types
+	const nodeStyles = {
+		width: "30px",
+		height: "30px",
+		backgroundColor: isStart
+			? "green"
+			: isGoal
+			? "red"
+			: isSolid
+			? "black"
+			: isOpen
+			? "blue"
+			: isChecked
+			? "purple"
+			: "lightgray",
+        // border: "1px solid #ccc",
+        // outline: "1px solid rgb(175, 216, 248)",
+        margin: "2px",
+        display: "inline-block",
 
-        this.isStart = false;
-        this.isGoal = false;
-        this.isSolid = false;
-        this.isOpen = false;
-        this.isChecked = false;
+	};
 
-        // for A* search algo
-        this.gCost = -1;
-        this.hCost = -1;
-        this.fCost = -1;
-
-        this.prevNode = null;
-    }
-}
+	return (
+		<div style={nodeStyles}>
+		</div>
+	);
+};
 
 export default Node;
