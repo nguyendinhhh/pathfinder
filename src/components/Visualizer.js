@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Node from "./Node";
+import { NavBar } from "./NavBar";
 import { css } from "@emotion/css";
 
 const maxRows = 30;
@@ -72,6 +73,7 @@ export const Visualizer = () => {
 
 	return (
 		<>
+			<NavBar />
 			<div
 				id="grid-container"
 				className={css`
