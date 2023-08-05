@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import Node from "./Node";
 import { css } from "@emotion/css";
-import theme from "../theme";
 
 const maxRows = 30;
 const maxCols = 46;
@@ -11,9 +10,11 @@ const goalNodeLocation = { row: 15, col: 41 };
 export const Visualizer = () => {
 	const [startNodePos, setStartNodePos] = useState(startNodeLocation);
 	const [goalNodePos, setGoalNodePos] = useState(goalNodeLocation);
+	const [isDrawing, setIsDrawing] = useState(false); // New state for drawing solid nodes
+	const [grid, setGrid] = useState(createGrid()); // Use state for grid
 
 	// create a 2d array of nodes
-	const createGrid = () => {
+	function createGrid() {
 		const grid = [];
 		for (let row = 0; row < maxRows; row++) {
 			const currentRow = [];
@@ -22,7 +23,7 @@ export const Visualizer = () => {
 					row,
 					col,
 					isStart:
-						row === startNodeLocation.row && col === startNodeLocation.col, // this will return true once we get to the coordinates
+						row === startNodeLocation.row && col === startNodeLocation.col,
 					isGoal: row === goalNodeLocation.row && col === goalNodeLocation.col,
 					isSolid: false,
 					isOpen: false,
@@ -33,10 +34,7 @@ export const Visualizer = () => {
 			grid.push(currentRow);
 		}
 		return grid;
-	};
-
-	// create grid
-	const grid = createGrid();
+	}
 
 	// event handlers for dragging the start node and the goal node
 	const handleNodeMouseDown = (row, col, isStart, isGoal) => {
@@ -44,7 +42,10 @@ export const Visualizer = () => {
 			setStartNodePos({ row, col });
 		} else if (isGoal) {
 			setGoalNodePos({ row, col });
-        }
+		} else {
+			setIsDrawing(true);
+			handleNodeMouseEnter(row, col, false, false); // Call handleNodeMouseEnter directly to set the node to solid on click
+		}
 	};
 
 	const handleNodeMouseEnter = (row, col, isStart, isGoal) => {
@@ -52,17 +53,27 @@ export const Visualizer = () => {
 			setStartNodePos({ row, col });
 		} else if (isGoal) {
 			setGoalNodePos({ row, col });
-        }
+		} else if (isDrawing && !isStart && !isGoal) {
+			setGrid((prevGrid) =>
+				prevGrid.map((r, rowIndex) =>
+					r.map((node, colIndex) =>
+						rowIndex === row && colIndex === col
+							? { ...node, isSolid: true }
+							: node
+					)
+				)
+			);
+		}
 	};
 
-	const handleNodeMouseUp = () => {
-		// Any additional logic when the dragging stops (if needed)
+	const handleNodeMouseUp = (row, col, isStart, isGoal) => {
+		setIsDrawing(false);
 	};
 
 	return (
 		<>
-            <div
-                id="grid-container"
+			<div
+				id="grid-container"
 				className={css`
 					margin-top: 2em;
 					display: grid;
@@ -91,8 +102,6 @@ export const Visualizer = () => {
 								onNodeMouseDown={handleNodeMouseDown}
 								onNodeMouseEnter={handleNodeMouseEnter}
 								onNodeMouseUp={handleNodeMouseUp}
-								startNodePos={startNodePos}
-								goalNodePos={goalNodePos}
 							/>
 						))}
 					</div>
