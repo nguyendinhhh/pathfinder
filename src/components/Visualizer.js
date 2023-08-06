@@ -32,9 +32,9 @@ export const Visualizer = () => {
 					isChecked: false,
 					inPath: false,
 					prev: null,
-					gCost: -1,
-					hCost: -1,
-					fCost: -1,
+					gCost: 0,
+					hCost: 0,
+					fCost: 0,
 				};
 				currentRow.push(newNode);
 			}
@@ -143,7 +143,7 @@ export const Visualizer = () => {
 						neighbor.prev = currentNode;
 
 						if (!openList.includes(neighbor)) {
-							openList.push(neighbor);
+                            openList.push(neighbor);
 						}
 					}
 				}

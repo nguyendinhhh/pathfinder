@@ -28,8 +28,7 @@ export const NavBar = ({ clearPath, aStar, resetAll, resetObstacles, dijkstras }
 					`}
 					onClick={aStar}
 				>
-					Double click to<br></br>
-					Start A* Search Algorithm
+				    Start A* Search Algorithm
 				</div>
 				<div
 					className={css`
