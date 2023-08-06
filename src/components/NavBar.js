@@ -2,7 +2,7 @@ import React from "react";
 import { css } from "@emotion/css";
 import theme from "../theme";
 
-export const NavBar = ({ aStar, resetAll, resetObstacles }) => {
+export const NavBar = ({ aStar, resetAll, resetObstacles, dijkstras }) => {
 	return (
 		<>
 			<div
@@ -13,13 +13,14 @@ export const NavBar = ({ aStar, resetAll, resetObstacles }) => {
 					height: 5em;
 				`}
 			>
-				{/* <div
+				<div
 					className={css`
 						${theme.algoButton}
 					`}
+                    onClick={dijkstras}
 				>
 					Start Dijkstra's Algorithm
-				</div> */}
+				</div>
 				<div
 					className={css`
 						${theme.algoButton}

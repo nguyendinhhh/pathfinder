@@ -81,10 +81,15 @@ export const Visualizer = () => {
 		const dx = Math.abs(nodeA.col - nodeB.col);
 		const dy = Math.abs(nodeA.row - nodeB.row);
 		return dx + dy;
-	};
+    };
+    
+    const dijkstraSAlgorithm = () => {
+        console.log("test")
+    }
 
 	// A* search algorithm
-	const aStarAlgorithm = () => {
+    const aStarAlgorithm = () => {
+
 		if (!goalReached) {
 			const startNode = grid[startNodePos.row][startNodePos.col];
 			const goalNode = grid[goalNodePos.row][goalNodePos.col];
@@ -107,11 +112,11 @@ export const Visualizer = () => {
 				currentNode.isChecked = true;
 
 				// If the goal node is found, backtrack the path and set inPath property
-				if (currentNode === goalNode) {
+                if (currentNode === goalNode) {
 					goalReached = true;
 					let current = goalNode;
-					while (current !== startNode) {
-						current.inPath = true;
+                    while (current && current !== startNode) {
+                        current.inPath = true;
 						current = current.prev;
 					}
 					return;
@@ -146,19 +151,26 @@ export const Visualizer = () => {
 		}
 	};
 
-    const resetAll = () => {
-        setStartNodePos(startNodeLocation);
-        setGoalNodePos(goalNodeLocation);
-		setGrid(createGrid());
+	const resetAll = () => {
+		setStartNodePos(startNodeLocation);
+		setGoalNodePos(goalNodeLocation);
+        setGrid(createGrid());
+        goalReached = false;
 	};
 
 	const resetObstacles = () => {
-		setGrid(createGrid());
+        setGrid(createGrid());
+        goalReached = false;
 	};
 
 	return (
 		<>
-			<NavBar resetAll={resetAll} aStar={aStarAlgorithm} resetObstacles={resetObstacles} />
+			<NavBar
+				resetAll={resetAll}
+                aStar={aStarAlgorithm}
+                dijkstras={dijkstraSAlgorithm}
+				resetObstacles={resetObstacles}
+			/>
 			<div
 				id="grid-container"
 				className={css`
