@@ -13,14 +13,14 @@ export const NavBar = ({ clearPath, aStar, resetAll, resetObstacles, dijkstras }
 					height: 5em;
 				`}
 			>
-				<div
+				{/* <div
 					className={css`
 						${theme.algoButton}
 					`}
 					onClick={dijkstras}
 				>
 					Start Dijkstra's Algorithm
-				</div>
+				</div> */}
 				<div
 					className={css`
 						${theme.algoButton}

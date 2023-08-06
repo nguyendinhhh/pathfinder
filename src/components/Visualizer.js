@@ -218,7 +218,15 @@ export const Visualizer = () => {
 						))}
 					</div>
 				))}
-			</div>
+            </div>
+            <small
+                className={css`
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                margin-top: 2em;
+                `}
+            >Designed and developed by Nguyen Dinh</small>
 		</>
 	);
 };
