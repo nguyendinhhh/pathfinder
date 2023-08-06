@@ -7,8 +7,8 @@ const Node = ({
 	isStart,
 	isGoal,
 	isSolid,
-	isOpen,
 	isChecked,
+	inPath,
 	onNodeMouseDown,
 	onNodeMouseEnter,
 	onNodeMouseUp,
@@ -21,18 +21,19 @@ const Node = ({
 		width: "30px",
 		height: "30px",
 		backgroundColor: isStart
-			? "green"
+			? "blue"
 			: isGoal
 			? "red"
 			: isSolid
 			? "black"
-			: isOpen
-			? "blue"
+			: inPath
+			? "green"
 			: isChecked
-			? "purple"
-			: "lightgray",
-		outline: "1px solid #fff",
-		display: "inline-block",
+			? "pink"
+			: "white",
+		outline: "1px solid #000",
+        display: "inline-block",
+        margin: 0,
 		cursor: isDragging ? "move" : "pointer",
 	};
 
@@ -49,8 +50,8 @@ const Node = ({
 			const x = e.clientX - gridRect.left;
 			const y = e.clientY - gridRect.top;
 			// Calculate the new row and column (clamped within the grid boundaries)
-			const newRow = clamp(Math.floor(y / 30)-2, 0, maxRows - 1);
-            const newCol = clamp(Math.floor(x / 30)-1, 0, maxCols - 1);
+			const newRow = clamp(Math.floor(y / 30) - 2, 0, maxRows - 1);
+			const newCol = clamp(Math.floor(x / 30) - 10, 0, maxCols - 1);
 
 			onNodeMouseEnter(newRow, newCol, isStart, isGoal);
 		};

@@ -9,13 +9,12 @@ let goalReached = false;
 const startNodeLocation = { row: maxRows / 2 + 1, col: 4 };
 const goalNodeLocation = { row: maxRows / 2 + 1, col: maxCols - 5 };
 
-
 export const Visualizer = () => {
 	const [startNodePos, setStartNodePos] = useState(startNodeLocation);
-    const [goalNodePos, setGoalNodePos] = useState(goalNodeLocation);
+	const [goalNodePos, setGoalNodePos] = useState(goalNodeLocation);
 	const [isDrawing, setIsDrawing] = useState(false); // New state for drawing solid nodes
 	const [grid, setGrid] = useState(createGrid()); // Use state for grid
-	// const [openList, setOpenList] = useState([]);
+	const [openList, setOpenList] = useState([]);
 
 	// create a 2d array of nodes
 	function createGrid() {
@@ -25,14 +24,14 @@ export const Visualizer = () => {
 			for (let col = 0; col < maxCols; col++) {
 				const newNode = {
 					row,
-                    col,
+					col,
 					isStart:
 						row === startNodeLocation.row && col === startNodeLocation.col,
 					isGoal: row === goalNodeLocation.row && col === goalNodeLocation.col,
 					isSolid: false,
-					isOpen: false,
-                    isChecked: false,
-                    prev: null,
+					isChecked: false,
+					inPath: false,
+					prev: null,
 					gCost: -1,
 					hCost: -1,
 					fCost: -1,
@@ -40,14 +39,14 @@ export const Visualizer = () => {
 				currentRow.push(newNode);
 			}
 			grid.push(currentRow);
-        }
+		}
 		return grid;
 	}
 
 	// event handlers for dragging the start node and the goal node
 	const handleNodeMouseDown = (row, col, isStart, isGoal) => {
 		if (isStart) {
-            setStartNodePos({ row, col });
+			setStartNodePos({ row, col });
 		} else if (isGoal) {
 			setGoalNodePos({ row, col });
 		} else {
@@ -58,7 +57,7 @@ export const Visualizer = () => {
 
 	const handleNodeMouseEnter = (row, col, isStart, isGoal) => {
 		if (isStart) {
-            setStartNodePos({ row, col });
+			setStartNodePos({ row, col });
 		} else if (isGoal) {
 			setGoalNodePos({ row, col });
 		} else if (isDrawing && !isStart && !isGoal) {
@@ -78,25 +77,88 @@ export const Visualizer = () => {
 		setIsDrawing(false);
 	};
 
-	// get cost
-	const getCost = (node) => {
-		// get G cost
-		let xDis = Math.abs(node.col - startNodePos.col);
-		let yDis = Math.abs(node.row - startNodePos.row);
-		node.gCost = xDis + yDis;
+	const getHeuristic = (nodeA, nodeB) => {
+		const dx = Math.abs(nodeA.col - nodeB.col);
+		const dy = Math.abs(nodeA.row - nodeB.row);
+		return dx + dy;
+	};
 
-		// get H cost
-		xDis = Math.abs(node.col - goalNodePos.col);
-		yDis = Math.abs(node.row - goalNodePos.row);
-		node.hCost = xDis + yDis;
+	// A* search algorithm
+	const aStarAlgorithm = () => {
+		if (!goalReached) {
+			const startNode = grid[startNodePos.row][startNodePos.col];
+			const goalNode = grid[goalNodePos.row][goalNodePos.col];
 
-		// get F cost
-		node.fCost = node.gCost + node.hCost;
-    };
+			setOpenList([startNode]);
+			const closedList = [];
+
+			while (openList.length > 0 && !goalReached) {
+				// Find the node with the lowest fCost in the openList
+				let currentNode = openList[0];
+				for (let i = 1; i < openList.length; i++) {
+					if (openList[i].fCost < currentNode.fCost) {
+						currentNode = openList[i];
+					}
+				}
+
+				// Move currentNode from openList to closedList
+				openList.splice(openList.indexOf(currentNode), 1);
+				closedList.push(currentNode);
+				currentNode.isChecked = true;
+
+				// If the goal node is found, backtrack the path and set inPath property
+				if (currentNode === goalNode) {
+					goalReached = true;
+					let current = goalNode;
+					while (current !== startNode) {
+						current.inPath = true;
+						current = current.prev;
+					}
+					return;
+				}
+
+				// Generate neighbors
+				const neighbors = [];
+				const { row, col } = currentNode;
+				if (row > 0) neighbors.push(grid[row - 1][col]);
+				if (row < maxRows - 1) neighbors.push(grid[row + 1][col]);
+				if (col > 0) neighbors.push(grid[row][col - 1]);
+				if (col < maxCols - 1) neighbors.push(grid[row][col + 1]);
+
+				// Process neighbors
+				for (const neighbor of neighbors) {
+					if (neighbor.isSolid || closedList.includes(neighbor)) continue;
+
+					const tentativeGCost = currentNode.gCost + 1; // Assuming uniform edge cost = 1
+
+					if (!openList.includes(neighbor) || tentativeGCost < neighbor.gCost) {
+						neighbor.gCost = tentativeGCost;
+						neighbor.hCost = getHeuristic(neighbor, goalNode);
+						neighbor.fCost = neighbor.gCost + neighbor.hCost;
+						neighbor.prev = currentNode;
+
+						if (!openList.includes(neighbor)) {
+							openList.push(neighbor);
+						}
+					}
+				}
+			}
+		}
+	};
+
+    const resetAll = () => {
+        setStartNodePos(startNodeLocation);
+        setGoalNodePos(goalNodeLocation);
+		setGrid(createGrid());
+	};
+
+	const resetObstacles = () => {
+		setGrid(createGrid());
+	};
 
 	return (
 		<>
-			<NavBar />
+			<NavBar resetAll={resetAll} aStar={aStarAlgorithm} resetObstacles={resetObstacles} />
 			<div
 				id="grid-container"
 				className={css`
@@ -114,7 +176,7 @@ export const Visualizer = () => {
 							<Node
 								key={`node-${rowIndex}-${colIndex}`}
 								row={rowIndex}
-                                col={colIndex}
+								col={colIndex}
 								isStart={
 									rowIndex === startNodePos.row && colIndex === startNodePos.col
 								}
@@ -122,8 +184,8 @@ export const Visualizer = () => {
 									rowIndex === goalNodePos.row && colIndex === goalNodePos.col
 								}
 								isSolid={node.isSolid}
-								isOpen={node.isOpen}
 								isChecked={node.isChecked}
+								inPath={node.inPath}
 								onNodeMouseDown={handleNodeMouseDown}
 								onNodeMouseEnter={handleNodeMouseEnter}
 								onNodeMouseUp={handleNodeMouseUp}
