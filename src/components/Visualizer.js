@@ -149,7 +149,19 @@ export const Visualizer = () => {
 				}
 			}
 		}
-	};
+    };
+    
+    const clearPath = () => {
+        const newGrid = grid.map((row) => (
+            row.map(node => ({
+                ...node,
+                isChecked: false,
+                inPath: false,
+            }))
+        ))
+        setGrid(newGrid)
+        goalReached = false;
+    }
 
 	const resetAll = () => {
 		setStartNodePos(startNodeLocation);
@@ -165,7 +177,8 @@ export const Visualizer = () => {
 
 	return (
 		<>
-			<NavBar
+            <NavBar
+                clearPath={clearPath}
 				resetAll={resetAll}
                 aStar={aStarAlgorithm}
                 dijkstras={dijkstraSAlgorithm}
