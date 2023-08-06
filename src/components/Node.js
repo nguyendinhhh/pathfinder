@@ -50,7 +50,7 @@ const Node = ({
 			const y = e.clientY - gridRect.top;
 			// Calculate the new row and column (clamped within the grid boundaries)
 			const newRow = clamp(Math.floor(y / 30)-2, 0, maxRows - 1);
-			const newCol = clamp(Math.floor(x / 30)-6, 0, maxCols - 1);
+            const newCol = clamp(Math.floor(x / 30)-1, 0, maxCols - 1);
 
 			onNodeMouseEnter(newRow, newCol, isStart, isGoal);
 		};
